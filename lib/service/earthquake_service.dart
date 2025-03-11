@@ -6,11 +6,17 @@ import 'package:http/http.dart' as http;
 import 'package:xml2json/xml2json.dart';
 
 class EarthquakeService {
-  static const String apiUrl = 'https://deprem.afad.gov.tr/apiv2/event/filter?start=2025-01-01 10:00:00&end=2025-02-20 10:00:00';
+  static const String baseUrl = 'https://deprem.afad.gov.tr/apiv2/event/filter';
 
-  Future<List<Earthquake>> fetchEarthquakes() async {
+  Future<List<Earthquake>> fetchEarthquakes({String? startDate, String? endDate}) async {
     try {
-      final response = await http.get(Uri.parse(apiUrl));
+      final defaultStart = '2025-01-01 10:00:00';
+      final defaultEnd = '2025-03-11';
+      final Uri uri = Uri.parse(baseUrl).replace(queryParameters: {
+        'start': startDate ?? defaultStart,
+        'end': endDate ?? defaultEnd,
+      });
+      final response = await http.get(Uri.parse(uri.toString()));
 
       print('API Response Status Code: ${response.statusCode}');
       print('API Response Body: ${response.body}');
